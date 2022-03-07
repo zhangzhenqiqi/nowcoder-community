@@ -12,4 +12,9 @@ public interface DiscussPostMapper {
 
     int selectDiscussPostRows(@Param("userId") int userId);//id=0时表示所有
 
+    DiscussPost selectDiscussPostById(int id);
+
+    int insertDiscussPost(DiscussPost discussPost);
+
+    int updateCommentCount(int id, int commentCount);
 }

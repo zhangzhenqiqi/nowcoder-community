@@ -103,6 +103,9 @@ public class LoginController implements CommunityConstant {
 
     }
 
+    /**
+     * 登录模块
+     * */
     @PostMapping("/login")
     public String login(String username, String password, String code, boolean rememberMe,
                         Model model, HttpSession session, HttpServletResponse response) {
@@ -121,7 +124,7 @@ public class LoginController implements CommunityConstant {
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
             return "redirect:/index";
-        } else {
+        } else {//error
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             return "/site/login";

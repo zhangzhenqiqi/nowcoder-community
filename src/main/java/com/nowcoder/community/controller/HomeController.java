@@ -2,7 +2,7 @@ package com.nowcoder.community.controller;
 
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.Page;
-import com.nowcoder.community.service.DIscussPostService;
+import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import java.util.Map;
 @Controller
 public class HomeController {
     @Autowired
-    private DIscussPostService dIscussPostService;
+    private DiscussPostService dIscussPostService;
     @Autowired
     private UserService userService;
 

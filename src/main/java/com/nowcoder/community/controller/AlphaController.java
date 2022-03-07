@@ -131,4 +131,11 @@ public class AlphaController {
         session.setAttribute("name", "zzq");
         return "set session";
     }
+
+    @PostMapping("/ajax")
+    @ResponseBody//如果不加此注解，则会将JSONString视作视图，找不到这个视图会报错！！
+    public String ajax(String name, int age, HttpServletResponse response) {
+        System.out.println(name + " " + age);
+        return CommunityUtil.getJSONString(100, "success");
+    }
 }
