@@ -2,7 +2,10 @@ package com.nowcoder.community.controller;
 
 import com.nowcoder.community.annotation.LoginRequired;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.service.FollowService;
+import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHoler;
 import org.apache.commons.lang3.StringUtils;
@@ -26,24 +29,24 @@ import java.io.OutputStream;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Value("${community.path.upload}")
     private String uploadPath;
-
     @Value("${community.path.domain}")
     private String domain;
-
     @Value("${server.servlet.context-path}")
     private String contextPath;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private HostHoler hostHoler;
+    @Autowired
+    private LikeService likeService;
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @GetMapping("/setting")
@@ -119,4 +122,24 @@ public class UserController {
         userService.updatePassword(user.getId(), newPassword);
         return "redirect:/index";
     }
+
+    @GetMapping("/profile/{userId}")
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("该用户不存在!");
+        }
+        model.addAttribute("user", user);
+        model.addAttribute("likeCount", likeService.findUserLikeCount(user.getId()));
+        //登录用户是否关注了待查看的用户
+        User loginUser = hostHoler.getUser();
+        if (loginUser != null)
+            model.addAttribute("followed",
+                    followService.getFollowEntityStatus(loginUser.getId(), ENTITY_TYPE_USER, userId));
+        model.addAttribute("followeeCount", followService.getFolloweeCount(userId, ENTITY_TYPE_USER));
+        model.addAttribute("followerCount", followService.getFollowerCount(ENTITY_TYPE_USER, userId));
+        return "/site/profile";
+    }
+
+
 }
