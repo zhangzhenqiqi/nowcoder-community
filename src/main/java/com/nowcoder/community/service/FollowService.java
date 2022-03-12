@@ -1,6 +1,7 @@
 package com.nowcoder.community.service;
 
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.event.EventProducer;
 import com.nowcoder.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,6 +19,8 @@ public class FollowService {
     private RedisTemplate redisTemplate;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EventProducer producer;
 
     public void follow(int userId, int entityType, int entityId) {
         redisTemplate.execute(new SessionCallback() {

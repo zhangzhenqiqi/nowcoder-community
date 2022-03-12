@@ -13,7 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+/*统一日志处理*/
 @Component
 @Aspect
 public class ServiceLogAspect {
@@ -27,6 +27,9 @@ public class ServiceLogAspect {
     public void before(JoinPoint joinPoint) {
         //用户[.2.3.4],在[xxx],访问了[com.nowcoder.community.service.xxx()].
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if(attributes==null){
+            return;
+        }
         HttpServletRequest request = attributes.getRequest();
         String ip = request.getRemoteHost();
         String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
