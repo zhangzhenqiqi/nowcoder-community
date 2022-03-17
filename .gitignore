@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 application-dev.properties
 
 # Compiled class file
@@ -24,7 +24,7 @@ application-dev.properties
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-=======
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
