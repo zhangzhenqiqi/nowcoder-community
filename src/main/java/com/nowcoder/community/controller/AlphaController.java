@@ -126,7 +126,7 @@ public class AlphaController {
 
     @GetMapping("/session/set")
     @ResponseBody
-    public String setSession(HttpSession session) {
+    public String setSession(HttpServletRequest request,HttpServletResponse response, HttpSession session) {
         session.setAttribute("id", 1);
         session.setAttribute("name", "zzq");
         return "set session";

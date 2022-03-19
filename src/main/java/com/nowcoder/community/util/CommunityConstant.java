@@ -62,11 +62,26 @@ public interface CommunityConstant {
      * 主题：发帖
      */
     String TOPIC_PUBLISH = "publish";
+
     /**
      * 系统id
      */
     int SYSTEM_USER_ID = 1;
 
+    /**
+     * 权限：普通用户
+     */
+    String AUTHORITY_USER = "user";
+
+    /**
+     * 权限：管理员
+     */
+    String AUTHORITY_ADMIN = "admin";
+
+    /**
+     * 权限：版主
+     */
+    String AUTHORITY_MODERATOR = "moderator";
 
     int CODE_FOLLOW = 1;
     int CODE_UNFOLLOW = 0;
