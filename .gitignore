@@ -1,6 +1,5 @@
 
 application-dev.properties
-
 # Compiled class file
 *.class
 
@@ -58,4 +57,4 @@ build/
 
 ### VS Code ###
 .vscode/
->>>>>>> 423a09e (f)
+/src/test/
