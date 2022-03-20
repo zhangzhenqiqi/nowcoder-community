@@ -54,6 +54,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         AUTHORITY_ADMIN,
                         AUTHORITY_MODERATOR
                 )
+                .antMatchers(
+                        "/discuss/top",
+                        "/discuss/wonderful"
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_MODERATOR,
+                        AUTHORITY_ADMIN
+                )
+                .antMatchers(
+                        "/discuss/delete",
+                        "/stats/**"
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_ADMIN
+                )
                 .anyRequest().permitAll()
                 //security默认启用csrf，对于post请求在html表单中添加一个hidden标签存放csrf_token；但对于ajax请求需要自己手动配置header请求头
                 .and().csrf().disable();

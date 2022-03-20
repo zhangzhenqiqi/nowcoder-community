@@ -47,7 +47,7 @@ public class MapperTests {
 
     @Test
     public void testDiscussPost() {
-        List<DiscussPost> ds = discussPostMapper.selectDiscussPosts(0, 0, 10);
+        List<DiscussPost> ds = discussPostMapper.selectDiscussPosts(0, 0, 10,0);
         System.out.println(ds.size());
     }
 }

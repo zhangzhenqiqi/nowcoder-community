@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +30,12 @@ public class HomeController implements CommunityConstant {
 //    private HostHoler hostHoler;
 
     @GetMapping("/index")
-    public String getIndexPage(Model model, Page page) {
+    public String getIndexPage(Model model, Page page, @RequestParam(name = "postOrderMode", defaultValue = "0") int postOrderMode) {
         //spring自动将page加入model中
         page.setRows(dIscussPostService.findDiscussPostRows(0));
-        page.setPath("/index");
+        page.setPath("/index?postOrderMode=" + postOrderMode);
 
-        var list = dIscussPostService.findDiscussPosts(0, page.getOffset(), page.getLimit());
+        var list = dIscussPostService.findDiscussPosts(0, page.getOffset(), page.getLimit(), postOrderMode);
         List<Map<String, Object>> discussPosts = new ArrayList<>();
         if (list != null) {
             for (DiscussPost post : list) {
@@ -47,6 +48,7 @@ public class HomeController implements CommunityConstant {
                 discussPosts.add(map);
             }
         }
+        model.addAttribute("postOrderMode", postOrderMode);
         model.addAttribute("discussPosts", discussPosts);
         return "/index";
     }
@@ -55,6 +57,7 @@ public class HomeController implements CommunityConstant {
     public String getErrorPage() {
         return "/error/500";
     }
+
     @GetMapping("/denied")
     public String getDeniedPage() {
         return "/error/404";

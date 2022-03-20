@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!--&lt;!&ndash;    security 在访问该页面时生成令牌&ndash;&gt;-->
-<!--    <meta name="_csrf" th:content="${_csrf.token}">-->
-<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}">-->
+    <!--&lt;!&ndash;    security 在访问该页面时生成令牌&ndash;&gt;-->
+    <!--    <meta name="_csrf" th:content="${_csrf.token}">-->
+    <!--    <meta name="_csrf_header" th:content="${_csrf.headerName}">-->
     <link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           crossorigin="anonymous">
@@ -80,10 +80,12 @@
                 <!-- 筛选条件 -->
                 <ul class="nav nav-tabs mb-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">最新</a>
+                        <a th:class="|nav-link ${postOrderMode==0?'active':''}|"
+                           th:href="@{/index?postOrderMode=0}">最新</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">最热</a>
+                        <a th:class="|nav-link ${postOrderMode==1?'active':''}|"
+                           th:href="@{/index?postOrderMode=1}">最热</a>
                     </li>
                 </ul>
                 <button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal"
@@ -138,7 +140,7 @@
             <!-- 帖子列表 -->
             <ul class="list-unstyled">
                 <li class="media pb-3 pt-3 mb-3 border-bottom" th:each="map:${discussPosts}">
-                    <a th:href="@{|/user/profile/${map.user.id}|}">
+                    <a th:href="@{|/discuss/detail/${map.post.id}|}">
                         <img th:src="${map.user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像"
                              style="width:50px;height:50px;">
                     </a>

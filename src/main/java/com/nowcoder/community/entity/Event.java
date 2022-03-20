@@ -7,8 +7,8 @@ public class Event {
     private String topic;
     private int userId;//事件触发者
     private int entityType;
-    private int entityId;
-    private int entityUserId;//被事件触发者
+    private int entityId;//被事件触发的entity的id（类型为entityType）
+    private int entityUserId;//被事件触发者（当entityType表示user时有效）
     private Map<String, Object> data = new HashMap<>();
 
     public String getTopic() {

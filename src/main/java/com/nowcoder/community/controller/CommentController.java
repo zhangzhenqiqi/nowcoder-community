@@ -8,7 +8,9 @@ import com.nowcoder.community.service.CommentService;
 import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.HostHoler;
+import com.nowcoder.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +33,16 @@ public class CommentController implements CommunityConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
+    /**
+     * 评论帖子/回复
+     *
+     * @param discussPostId
+     * @param comment
+     * @return
+     */
     @PostMapping("/add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment) {
         comment.setUserId(hostHoler.getUser().getId());
@@ -62,6 +73,9 @@ public class CommentController implements CommunityConstant {
                     .setEntityType(comment.getEntityType())
                     .setEntityId(discussPostId);
             eventProducer.fireEvent(event);
+            //计算帖子分数
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey, discussPostId);
         }
         return "redirect:/discuss/detail/" + discussPostId;
     }

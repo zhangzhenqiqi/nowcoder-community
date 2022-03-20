@@ -19,8 +19,6 @@ public class FollowService {
     private RedisTemplate redisTemplate;
     @Autowired
     private UserService userService;
-    @Autowired
-    private EventProducer producer;
 
     public void follow(int userId, int entityType, int entityId) {
         redisTemplate.execute(new SessionCallback() {

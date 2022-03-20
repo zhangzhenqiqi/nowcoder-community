@@ -1,6 +1,5 @@
 package com.nowcoder.community.controller;
 
-import com.alibaba.fastjson.annotation.JSONCreator;
 import com.nowcoder.community.entity.*;
 import com.nowcoder.community.event.EventProducer;
 import com.nowcoder.community.service.CommentService;
@@ -10,7 +9,9 @@ import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHoler;
+import com.nowcoder.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,16 @@ public class DiscussPostController implements CommunityConstant {
 
     @Autowired
     private EventProducer eventProducer;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
+    /**
+     * 新增帖子
+     *
+     * @param title
+     * @param content
+     * @return
+     */
     @PostMapping("/add")
     @ResponseBody
     public String add(String title, String content) {
@@ -58,6 +68,10 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(post.getId());
         eventProducer.fireEvent(event);
+
+        //计算帖子分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, post.getId());
         return CommunityUtil.getJSONString(0, "发布成功。");
     }
 
@@ -117,5 +131,56 @@ public class DiscussPostController implements CommunityConstant {
         }
         model.addAttribute("comments", commentVoList);
         return "/site/discuss-detail";
+    }
+
+    //置顶
+    @PostMapping("/top")
+    @ResponseBody
+    public String setTop(@RequestParam("postId") int id) {
+        discussPostService.updateType(id, 1);
+        //触发发帖事件,由于帖子更新
+        Event event = new Event().setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHoler.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //加精
+    @PostMapping("/wonderful")
+    @ResponseBody
+    public String setWonderful(int postId) {
+        discussPostService.updateStatus(postId, 1);
+        //触发发帖事件,由于帖子更新
+        Event event = new Event().setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHoler.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(postId);
+        eventProducer.fireEvent(event);
+        //计算帖子分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, postId);
+        return CommunityUtil.getJSONString(0);
+    }
+
+
+    /**
+     * //删帖(拉黑,只是把s帖子状态更改了，并未从数据库删除，但是从es中删除掉了
+     *
+     * @param postId
+     * @return
+     */
+    @PostMapping("/delete")
+    @ResponseBody
+    public String setDelete(int postId) {
+        discussPostService.updateStatus(postId, 2);
+        //触发发帖事件,由于帖子更新
+        Event event = new Event().setTopic(TOPIC_DELETE)
+                .setUserId(hostHoler.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(postId);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
     }
 }

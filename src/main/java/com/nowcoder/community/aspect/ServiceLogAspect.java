@@ -13,7 +13,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-/*统一日志处理*/
+
+
+/**
+ * 利用aop实现对Service层的统一访问日志记录
+ */
 @Component
 @Aspect
 public class ServiceLogAspect {

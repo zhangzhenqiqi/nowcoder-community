@@ -49,7 +49,7 @@ public class ElasticSearchTests {
 
         int[] uids = {101, 102, 103, 111, 112, 131, 132, 133, 134};
         for (int uid : uids)
-            discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(uid, 0, 100));
+            discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(uid, 0, 100, 0));
     }
 
     @Test
